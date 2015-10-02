@@ -29,7 +29,8 @@ import java.util.Set;
  */
 public interface Expression extends Immutable {
 	/**
-	 * Get a set of variables on which this expression depends.
+	 * Get a set of variables on which this expression depends. This set is always immutable (cf. {@link
+	 * java.util.Collections#unmodifiableSet(java.util.Set)} for what this means.
 	 *
 	 * @return a {@link java.util.Set} of all {@link Variable}s used in this expression
 	 */

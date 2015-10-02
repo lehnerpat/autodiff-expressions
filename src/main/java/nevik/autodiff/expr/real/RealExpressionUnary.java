@@ -15,18 +15,21 @@
 
 package nevik.autodiff.expr.real;
 
-import nevik.autodiff.expr.Expression;
+import java.util.Collections;
 
 /**
- * Abstract base class for real-valued expression (corresponding to {@code double} in Java).
- *
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public abstract class RealExpression implements Expression {
-	// Implementation note: This class does not provide a common implementation of Expression.getVariables(), since the
-	// most reasonable way of doing so would be to pass the variable set to the constructor of this class
-	// (RealExpression) -- however, RealVariable *cannot* pass this set, since it would contain only the RealVariable
-	// instance itself, and a constructor cannot pass `this` to its super constructor. We therefore defer a common
-	// implementation of getVariables() for all non-terminal expressions to RealSuperExpression instead.
+public abstract class RealExpressionUnary extends RealSuperExpression {
+	/**
+	 * Create a new unary super-expression containing the given sub-expression. It is the caller's
+	 * responsibility to ensure that {@code subexpression} is not {@code null}.
+	 *
+	 * @param subexpression
+	 * 		sub-expression contained in this unary super-expression
+	 */
+	protected RealExpressionUnary(final RealExpression subexpression) {
+		super(Collections.singletonList(subexpression));
+	}
 }
