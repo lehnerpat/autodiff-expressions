@@ -17,9 +17,11 @@ package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Variable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -30,15 +32,51 @@ import java.util.Set;
  * @since 2015-10-02
  */
 public abstract class RealSuperExpression extends RealExpression {
+	// ===============================================================================================================
+	// ====  Static fields and methods  ==============================================================================
+	// ===============================================================================================================
+
+	/**
+	 * Argument-checker method for implementations of {@link RealSuperExpression}. Ensures that {@code subexpressions}
+	 * is not {@code null}, is not empty, and contains no {@code null} entries.
+	 *
+	 * @param subexpressions
+	 * 		list of subexpressions to check
+	 * @return {@code subexpressions} if it conforms to the above criteria (throws exception otherwise)
+	 *
+	 * @throws java.lang.NullPointerException
+	 * 		if {@code subexpressions} is {@code null}
+	 * @throws java.lang.IllegalArgumentException
+	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
+	 */
+	protected static List<RealExpression> argCheck(final List<RealExpression> subexpressions) {
+		if (subexpressions.isEmpty()) {
+			throw new IllegalArgumentException("Sub-expression list may not be empty");
+		}
+		if (subexpressions.stream().anyMatch(Objects::isNull)) {
+			throw new IllegalArgumentException("No element of sub-expression list may be null");
+		}
+		return subexpressions;
+	}
+
+	protected static List<RealExpression> immutableCopy(final List<RealExpression> subexpressions) {
+		return Collections.unmodifiableList(new ArrayList<>(subexpressions));
+	}
+
+	// ===============================================================================================================
+	// ====  Instance fields and methods  ============================================================================
+	// ===============================================================================================================
 	public final List<RealExpression> subexpressions;
 	protected final Set<Variable> variables;
 
 	/**
-	 * Create a new super-expression containing the given list of sub-expressions in the given order. It is the caller's
+	 * Create a new super-expression containing the given list of sub-expressions in the given order. It is the
+	 * caller's
 	 * responsibility to ensure that a) {@code subexpressions} is not {@code null}, b) {@code subexpressions} is not
 	 * empty (i.e. contains at least one element), and c) {@code subexpressions} contains no {@code null} entries.
 	 *
-	 * @param subexpressions list of sub-expressions contained in this super-expression
+	 * @param subexpressions
+	 * 		list of sub-expressions contained in this super-expression
 	 */
 	protected RealSuperExpression(final List<RealExpression> subexpressions) {
 		this.subexpressions = subexpressions;

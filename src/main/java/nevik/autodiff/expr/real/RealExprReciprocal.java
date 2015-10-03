@@ -19,23 +19,23 @@ import java.util.Objects;
 
 /**
  * @author Patrick Lehner
- * @since 2015-10-02
+ * @since 2015-10-03
  */
-public class RealExprNegation extends RealExpressionUnary {
+public class RealExprReciprocal extends RealExpressionUnary {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
 
 	/**
-	 * Create a new expression negating the given sub-expression.
+	 * Create a new reciprocal expression containing the given sub-expression.
 	 *
 	 * @param subexpression
-	 * 		sub-expression contained in this negation expression; must be non-{@code null}
+	 * 		sub-expression contained in this unary super-expression; must be non-{@code null}
 	 * @throws java.lang.NullPointerException
 	 * 		if {@code subexpression} is {@code null}
 	 */
-	public static RealExprNegation reNeg(final RealExpression subexpression) {
-		return new RealExprNegation(subexpression);
+	public static RealExprReciprocal reRecip(final RealExpression subexpression) {
+		return new RealExprReciprocal(subexpression);
 	}
 
 	// ===============================================================================================================
@@ -43,14 +43,14 @@ public class RealExprNegation extends RealExpressionUnary {
 	// ===============================================================================================================
 
 	/**
-	 * Create a new expression negating the given sub-expression.
+	 * Create a new reciprocal expression containing the given sub-expression.
 	 *
 	 * @param subexpression
-	 * 		sub-expression contained in this negation expression; must be non-{@code null}
+	 * 		sub-expression contained in this unary super-expression; must be non-{@code null}
 	 * @throws java.lang.NullPointerException
 	 * 		if {@code subexpression} is {@code null}
 	 */
-	public RealExprNegation(final RealExpression subexpression) {
+	public RealExprReciprocal(final RealExpression subexpression) {
 		super(Objects.requireNonNull(subexpression));
 	}
 }
