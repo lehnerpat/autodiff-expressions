@@ -28,6 +28,7 @@ public class RealExprAddition extends RealSuperExpression {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
+	private static final int HASHCODE_PRIME_OFFSET = 59971;
 
 	/**
 	 * Create a new addition expression containing the given list of sub-expressions in the given order.
@@ -63,6 +64,8 @@ public class RealExprAddition extends RealSuperExpression {
 	// ====  Instance fields and methods  ============================================================================
 	// ===============================================================================================================
 
+	protected final int hashCode;
+
 	/**
 	 * Create a new addition expression containing the given list of sub-expressions in the given order.
 	 *
@@ -76,5 +79,16 @@ public class RealExprAddition extends RealSuperExpression {
 	 */
 	public RealExprAddition(final List<RealExpression> subexpressions) {
 		super(immutableCopy(argCheck(subexpressions)));
+		this.hashCode = HASHCODE_PRIME_OFFSET + super.hashCode;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return this == o || (o instanceof RealExprAddition && ((RealExprAddition) o).hashCode == this.hashCode);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.hashCode;
 	}
 }

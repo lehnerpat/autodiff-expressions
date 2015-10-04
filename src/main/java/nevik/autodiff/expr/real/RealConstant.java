@@ -17,7 +17,6 @@ package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Constant;
 import nevik.autodiff.expr.Variable;
-import nevik.autodiff.util.CachedHashCode;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,11 +34,12 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public class RealConstant extends RealExpression implements Constant, CachedHashCode {
+public class RealConstant extends RealExpression implements Constant {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
 
+	private static final int HASHCODE_PRIME_OFFSET = 6007;
 	/**
 	 * Value->Instance map used for instance management. Contains all {@code RealConstant} instances that have been
 	 * constructed since this JVM instance has been started.
@@ -83,7 +83,7 @@ public class RealConstant extends RealExpression implements Constant, CachedHash
 
 	private static int computeHashCode(final double value) {
 		final long temp = Double.doubleToLongBits(value);
-		return 6007 + (int) (temp ^ (temp >>> 32));
+		return HASHCODE_PRIME_OFFSET + (int) (temp ^ (temp >>> 32));
 	}
 
 	// ===============================================================================================================
@@ -125,14 +125,7 @@ public class RealConstant extends RealExpression implements Constant, CachedHash
 
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
-		return Double.compare(((RealConstant) o).value, this.value) == 0;
+		return (this == o) || (o instanceof RealConstant && ((RealConstant) o).hashCode == this.hashCode);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ public class RealExprNegation extends RealExpressionUnary {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
+	private static final int HASHCODE_PRIME_OFFSET = 53887;
 
 	/**
 	 * Create a new expression negating the given sub-expression.
@@ -42,6 +43,8 @@ public class RealExprNegation extends RealExpressionUnary {
 	// ====  Instance fields and methods  ============================================================================
 	// ===============================================================================================================
 
+	protected final int hashCode;
+
 	/**
 	 * Create a new expression negating the given sub-expression.
 	 *
@@ -52,5 +55,16 @@ public class RealExprNegation extends RealExpressionUnary {
 	 */
 	public RealExprNegation(final RealExpression subexpression) {
 		super(Objects.requireNonNull(subexpression));
+		this.hashCode = HASHCODE_PRIME_OFFSET + super.hashCode;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return this == o || (o instanceof RealExprNegation && ((RealExprNegation) o).hashCode == this.hashCode);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.hashCode;
 	}
 }

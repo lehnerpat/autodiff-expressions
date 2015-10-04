@@ -16,7 +16,6 @@
 package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Variable;
-import nevik.autodiff.util.CachedHashCode;
 
 import java.util.Collections;
 import java.util.Set;
@@ -31,7 +30,7 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public class RealVariable extends RealExpression implements Variable, CachedHashCode {
+public class RealVariable extends RealExpression implements Variable {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
@@ -101,5 +100,10 @@ public class RealVariable extends RealExpression implements Variable, CachedHash
 	@Override
 	public int hashCode() {
 		return this.hashCode;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return o == this;
 	}
 }

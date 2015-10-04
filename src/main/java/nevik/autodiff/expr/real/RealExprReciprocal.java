@@ -25,6 +25,7 @@ public class RealExprReciprocal extends RealExpressionUnary {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
+	private static final int HASHCODE_PRIME_OFFSET = 62017;
 
 	/**
 	 * Create a new reciprocal expression containing the given sub-expression.
@@ -42,6 +43,8 @@ public class RealExprReciprocal extends RealExpressionUnary {
 	// ====  Instance fields and methods  ============================================================================
 	// ===============================================================================================================
 
+	protected final int hashCode;
+
 	/**
 	 * Create a new reciprocal expression containing the given sub-expression.
 	 *
@@ -52,5 +55,16 @@ public class RealExprReciprocal extends RealExpressionUnary {
 	 */
 	public RealExprReciprocal(final RealExpression subexpression) {
 		super(Objects.requireNonNull(subexpression));
+		this.hashCode = HASHCODE_PRIME_OFFSET + super.hashCode;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return this == o || (o instanceof RealExprReciprocal && ((RealExprReciprocal) o).hashCode == this.hashCode);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.hashCode;
 	}
 }

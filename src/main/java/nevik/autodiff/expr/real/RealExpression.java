@@ -16,6 +16,7 @@
 package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Expression;
+import nevik.autodiff.util.CachedHashCode;
 
 /**
  * Abstract base class for real-valued expression (corresponding to {@code double} in Java).
@@ -23,10 +24,16 @@ import nevik.autodiff.expr.Expression;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public abstract class RealExpression implements Expression {
+public abstract class RealExpression implements Expression, CachedHashCode {
 	// Implementation note: This class does not provide a common implementation of Expression.getVariables(), since the
 	// most reasonable way of doing so would be to pass the variable set to the constructor of this class
 	// (RealExpression) -- however, RealVariable *cannot* pass this set, since it would contain only the RealVariable
 	// instance itself, and a constructor cannot pass `this` to its super constructor. We therefore defer a common
 	// implementation of getVariables() for all non-terminal expressions to RealSuperExpression instead.
+
+	@Override
+	public abstract int hashCode();
+
+	@Override
+	public abstract boolean equals(final Object obj);
 }

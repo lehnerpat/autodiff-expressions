@@ -35,6 +35,7 @@ public abstract class RealSuperExpression extends RealExpression {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
+	private static final int HASHCODE_PRIME_OFFSET = 60457;
 
 	/**
 	 * Argument-checker method for implementations of {@link RealSuperExpression}. Ensures that {@code subexpressions}
@@ -63,11 +64,16 @@ public abstract class RealSuperExpression extends RealExpression {
 		return Collections.unmodifiableList(new ArrayList<>(subexpressions));
 	}
 
+	private static int computeHashCode(final List<RealExpression> subexpressions) {
+		return HASHCODE_PRIME_OFFSET + subexpressions.hashCode();
+	}
+
 	// ===============================================================================================================
 	// ====  Instance fields and methods  ============================================================================
 	// ===============================================================================================================
 	public final List<RealExpression> subexpressions;
 	protected final Set<Variable> variables;
+	protected final int hashCode;
 
 	/**
 	 * Create a new super-expression containing the given list of sub-expressions in the given order. It is the
@@ -85,10 +91,21 @@ public abstract class RealSuperExpression extends RealExpression {
 			variables.addAll(subexpression.getVariables());
 		}
 		this.variables = Collections.unmodifiableSet(variables);
+		this.hashCode = computeHashCode(this.subexpressions);
 	}
 
 	@Override
 	public Set<Variable> getVariables() {
 		return this.variables;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return this == o || (o instanceof RealSuperExpression && ((RealSuperExpression) o).hashCode == this.hashCode);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.hashCode;
 	}
 }
