@@ -37,7 +37,7 @@ public abstract class AbstractVisitorRealExpression<ParamType, ResultType, ExprR
 	protected ParamType params;
 
 	protected AbstractVisitorRealExpression(final Set<Class<? extends RealExpression>> supportedTypes,
-			final ParamType params, final RealExpression rootExpression) {
+			final RealExpression rootExpression, final ParamType params) {
 		this.params = params;
 		this.supportedTypes = supportedTypes;
 		this.rootExpression = rootExpression;
