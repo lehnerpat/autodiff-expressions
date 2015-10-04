@@ -27,6 +27,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,11 +35,9 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-04
  */
-public class VisitorRealExpressionPrintingInfix extends AbstractVisitorRealExpression<Map<RealVariable, String>, Void> {
+public class VisitorRealExpressionPrintingInfix extends AbstractVisitorRealExpression<Map<RealVariable, String>, Void, Void, Void> {
 	private static final Set<Class<? extends RealExpression>> SUPPORTED_TYPES = Collections.unmodifiableSet(new HashSet<>(
 			Arrays.asList(RealConstant.class, RealVariable.class, RealExprAddition.class, RealExprMultiplication.class)));
-
-	protected ArrayDeque<String> stack;
 
 	public VisitorRealExpressionPrintingInfix(final Map<RealVariable, String> params, final RealExpression rootExpression) {
 		super(SUPPORTED_TYPES, params, rootExpression);
@@ -48,45 +47,45 @@ public class VisitorRealExpressionPrintingInfix extends AbstractVisitorRealExpre
 	protected Void doEvaluation() {
 		if (this.params == null && this.rootExpression.usedTypes.contains(RealVariable.class))
 			throw new IllegalArgumentException("Cannot print expression containing variables without a name map (param)");
-		stack = new ArrayDeque<>();
-		this.rootExpression.accept(this);
-		System.out.println(stack.pop());
+		this.rootExpression.accept(this, null);
 		return null;
 	}
 
-	protected void visitRecursively(final RealSuperExpression superExpression) {
-		for (final RealExpression subexpression : superExpression.subexpressions) {
-			subexpression.accept(this);
+	@Override
+	public Void visit(final RealConstant realConstant, final Void state) {
+		System.out.print(realConstant.value);
+		return null;
+	}
+
+	@Override
+	public Void visit(final RealVariable realVariable, final Void state) {
+		System.out.print(this.params.get(realVariable));
+		return null;
+	}
+
+	@Override
+	public Void visit(final RealExprAddition realExprAddition, final Void state) {
+		final Iterator<RealExpression> iterator = realExprAddition.subexpressions.iterator();
+		System.out.print("(");
+		iterator.next().accept(this, null);
+		while (iterator.hasNext()) {
+			System.out.print(" + ");
+			iterator.next().accept(this, null);
 		}
+		System.out.print(")");
+		return null;
 	}
 
 	@Override
-	public void visit(final RealConstant realConstant) {
-		stack.push(String.valueOf(realConstant.value));
-	}
-
-	@Override
-	public void visit(final RealVariable realVariable) {
-		stack.push(this.params.get(realVariable));
-	}
-
-	@Override
-	public void visit(final RealExprAddition realExprAddition) {
-		visitRecursively(realExprAddition);
-		String s = stack.pop() + ")";
-		for (int i = 1; i < realExprAddition.subexpressions.size(); i++) {
-			s = stack.pop() + " + " + s;
+	public Void visit(final RealExprMultiplication realExprMultiplication, final Void state) {
+		final Iterator<RealExpression> iterator = realExprMultiplication.subexpressions.iterator();
+		System.out.print("(");
+		iterator.next().accept(this, null);
+		while (iterator.hasNext()) {
+			System.out.print(" * ");
+			iterator.next().accept(this, null);
 		}
-		stack.push("(" + s);
-	}
-
-	@Override
-	public void visit(final RealExprMultiplication realExprMultiplication) {
-		visitRecursively(realExprMultiplication);
-		String s = stack.pop() + ")";
-		for (int i = 1; i < realExprMultiplication.subexpressions.size(); i++) {
-			s = stack.pop() + " * " + s;
-		}
-		stack.push("(" + s);
+		System.out.print(")");
+		return null;
 	}
 }

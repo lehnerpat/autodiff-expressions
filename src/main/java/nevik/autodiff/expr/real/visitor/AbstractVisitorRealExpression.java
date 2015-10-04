@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
  * @author Patrick Lehner
  * @since 2015-10-04
  */
-public abstract class AbstractVisitorRealExpression<ParamType, ResultType>
-		implements VisitorRealExpression<ResultType> {
+public abstract class AbstractVisitorRealExpression<ParamType, ResultType, ExprResultType, StateType>
+		implements VisitorRealExpression<ResultType, ExprResultType, StateType> {
 	protected final Set<Class<? extends RealExpression>> supportedTypes;
 	protected RealExpression rootExpression;
 	protected ParamType params;
@@ -94,32 +94,32 @@ public abstract class AbstractVisitorRealExpression<ParamType, ResultType>
 	// ===============================================================================================================
 
 	@Override
-	public void visit(final RealConstant realConstant) {
+	public ExprResultType visit(final RealConstant realConstant, final StateType state) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void visit(final RealVariable realVariable) {
+	public ExprResultType visit(final RealVariable realVariable, final StateType state) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void visit(final RealExprAddition realExprAddition) {
+	public ExprResultType visit(final RealExprAddition realExprAddition, final StateType state) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void visit(final RealExprMultiplication realExprMultiplication) {
+	public ExprResultType visit(final RealExprMultiplication realExprMultiplication, final StateType state) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void visit(final RealExprNegation realExprNegation) {
+	public ExprResultType visit(final RealExprNegation realExprNegation, final StateType state) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void visit(final RealExprReciprocal realExprReciprocal) {
+	public ExprResultType visit(final RealExprReciprocal realExprReciprocal, final StateType state) {
 		throw new UnsupportedOperationException();
 	}
 }

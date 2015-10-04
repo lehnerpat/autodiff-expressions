@@ -40,11 +40,12 @@ public abstract class RealExpression implements Expression, CachedHashCode {
 		this.usedTypes = usedTypes;
 	}
 
-	public abstract void accept(VisitorRealExpression visitor);
-
 	@Override
 	public abstract int hashCode();
 
 	@Override
 	public abstract boolean equals(final Object obj);
+
+	public abstract <ExprResultType, StateType> ExprResultType accept(
+			VisitorRealExpression<?, ExprResultType, StateType> visitor, StateType state);
 }

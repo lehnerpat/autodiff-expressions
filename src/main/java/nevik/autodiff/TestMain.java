@@ -18,7 +18,6 @@ package nevik.autodiff;
 import nevik.autodiff.expr.real.RealConstant;
 import nevik.autodiff.expr.real.RealExprAddition;
 import nevik.autodiff.expr.real.RealExprMultiplication;
-import nevik.autodiff.expr.real.RealExprNegation;
 import nevik.autodiff.expr.real.visitor.VisitorRealExpressionPrintingInfix;
 
 import static nevik.autodiff.expr.real.RealConstant.reCons;
@@ -32,7 +31,7 @@ import static nevik.autodiff.expr.real.RealExprMultiplication.reMult;
 public class TestMain {
 	public static void main(String[] args) {
 		final RealConstant c = reCons(1.0);
-		final RealExprAddition a = reAdd(c, RealExprNegation.reNeg(reCons(2.0)));
+		final RealExprAddition a = reAdd(c, reCons(2.0));
 		final RealExprMultiplication m = reMult(reCons(4.0), reCons(-4));
 
 		new VisitorRealExpressionPrintingInfix(null, a).evaluate();

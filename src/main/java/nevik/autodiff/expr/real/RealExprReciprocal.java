@@ -71,7 +71,8 @@ public class RealExprReciprocal extends RealExpressionUnary {
 	}
 
 	@Override
-	public void accept(final VisitorRealExpression visitor) {
-		visitor.visit(this);
+	public <ExprResultType, StateType> ExprResultType accept(
+			final VisitorRealExpression<?, ExprResultType, StateType> visitor, final StateType state) {
+		return visitor.visit(this, state);
 	}
 }

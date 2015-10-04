@@ -29,13 +29,13 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-04
  */
-public interface VisitorRealExpression<ResultType> {
+public interface VisitorRealExpression<ResultType, ExprResultType, StateType> {
 	ResultType evaluate();
 	Set<Class<? extends RealExpression>> getSupportedTypes();
-	void visit(RealConstant realConstant);
-	void visit(RealVariable realVariable);
-	void visit(RealExprAddition realExprAddition);
-	void visit(RealExprMultiplication realExprMultiplication);
-	void visit(RealExprNegation realExprNegation);
-	void visit(RealExprReciprocal realExprReciprocal);
+	ExprResultType visit(RealConstant realConstant, StateType state);
+	ExprResultType visit(RealVariable realVariable, StateType state);
+	ExprResultType visit(RealExprAddition realExprAddition, StateType state);
+	ExprResultType visit(RealExprMultiplication realExprMultiplication, StateType state);
+	ExprResultType visit(RealExprNegation realExprNegation, StateType state);
+	ExprResultType visit(RealExprReciprocal realExprReciprocal, StateType state);
 }
