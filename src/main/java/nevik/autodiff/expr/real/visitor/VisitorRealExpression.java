@@ -13,23 +13,29 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-package nevik.autodiff.expr.real;
+package nevik.autodiff.expr.real.visitor;
 
-import java.util.Collections;
+import nevik.autodiff.expr.real.RealConstant;
+import nevik.autodiff.expr.real.RealExprAddition;
+import nevik.autodiff.expr.real.RealExprMultiplication;
+import nevik.autodiff.expr.real.RealExprNegation;
+import nevik.autodiff.expr.real.RealExprReciprocal;
+import nevik.autodiff.expr.real.RealExpression;
+import nevik.autodiff.expr.real.RealVariable;
+
+import java.util.Set;
 
 /**
  * @author Patrick Lehner
- * @since 2015-10-02
+ * @since 2015-10-04
  */
-public abstract class RealExpressionUnary extends RealSuperExpression {
-	/**
-	 * Create a new unary super-expression containing the given sub-expression. It is the caller's
-	 * responsibility to ensure that {@code subexpression} is not {@code null}.
-	 *
-	 * @param subexpression
-	 * 		sub-expression contained in this unary super-expression
-	 */
-	protected RealExpressionUnary(final Class<? extends RealExpression> newClazz, final RealExpression subexpression) {
-		super(newClazz, Collections.singletonList(subexpression));
-	}
+public interface VisitorRealExpression<ResultType> {
+	ResultType evaluate();
+	Set<Class<? extends RealExpression>> getSupportedTypes();
+	void visit(RealConstant realConstant);
+	void visit(RealVariable realVariable);
+	void visit(RealExprAddition realExprAddition);
+	void visit(RealExprMultiplication realExprMultiplication);
+	void visit(RealExprNegation realExprNegation);
+	void visit(RealExprReciprocal realExprReciprocal);
 }

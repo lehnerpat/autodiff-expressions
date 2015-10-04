@@ -16,6 +16,7 @@
 package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Variable;
+import nevik.autodiff.expr.real.visitor.VisitorRealExpression;
 
 import java.util.Collections;
 import java.util.Set;
@@ -61,6 +62,7 @@ public class RealVariable extends RealExpression implements Variable {
 	 * @see #RealVariable()
 	 */
 	public RealVariable(final String name) {
+		super(Collections.singleton(RealVariable.class));
 		this.name = name;
 		this.variables = Collections.singleton(this);
 		this.hashCode = System.identityHashCode(this); // cache the hash of this object
@@ -105,5 +107,10 @@ public class RealVariable extends RealExpression implements Variable {
 	@Override
 	public boolean equals(final Object o) {
 		return o == this;
+	}
+
+	@Override
+	public void accept(final VisitorRealExpression visitor) {
+		visitor.visit(this);
 	}
 }

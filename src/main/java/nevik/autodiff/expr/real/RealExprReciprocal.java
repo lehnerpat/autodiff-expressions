@@ -15,6 +15,8 @@
 
 package nevik.autodiff.expr.real;
 
+import nevik.autodiff.expr.real.visitor.VisitorRealExpression;
+
 import java.util.Objects;
 
 /**
@@ -54,7 +56,7 @@ public class RealExprReciprocal extends RealExpressionUnary {
 	 * 		if {@code subexpression} is {@code null}
 	 */
 	public RealExprReciprocal(final RealExpression subexpression) {
-		super(Objects.requireNonNull(subexpression));
+		super(RealExprReciprocal.class, Objects.requireNonNull(subexpression));
 		this.hashCode = HASHCODE_PRIME_OFFSET + super.hashCode;
 	}
 
@@ -66,5 +68,10 @@ public class RealExprReciprocal extends RealExpressionUnary {
 	@Override
 	public int hashCode() {
 		return this.hashCode;
+	}
+
+	@Override
+	public void accept(final VisitorRealExpression visitor) {
+		visitor.visit(this);
 	}
 }

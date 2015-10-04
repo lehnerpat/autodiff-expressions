@@ -31,7 +31,8 @@ public abstract class RealExpressionBinary extends RealSuperExpression {
 	 * @param rightSubexpression
 	 * 		second sub-expression contained in this unary super-expression
 	 */
-	protected RealExpressionBinary(final RealExpression leftSubexpression, final RealExpression rightSubexpression) {
-		super(Arrays.asList(leftSubexpression, rightSubexpression));
+	protected RealExpressionBinary(final Class<? extends RealExpression> newClazz,
+			final RealExpression leftSubexpression, final RealExpression rightSubexpression) {
+		super(newClazz, Arrays.asList(leftSubexpression, rightSubexpression));
 	}
 }

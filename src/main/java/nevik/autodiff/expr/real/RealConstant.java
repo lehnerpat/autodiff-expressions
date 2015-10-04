@@ -17,6 +17,7 @@ package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Constant;
 import nevik.autodiff.expr.Variable;
+import nevik.autodiff.expr.real.visitor.VisitorRealExpression;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,6 +98,7 @@ public class RealConstant extends RealExpression implements Constant {
 	protected final int hashCode;
 
 	private RealConstant(final double value) {
+		super(Collections.singleton(RealConstant.class));
 		this.value = value;
 		this.hashCode = computeHashCode(this.value);
 	}
@@ -131,5 +133,10 @@ public class RealConstant extends RealExpression implements Constant {
 	@Override
 	public int hashCode() {
 		return this.hashCode;
+	}
+
+	@Override
+	public void accept(final VisitorRealExpression visitor) {
+		visitor.visit(this);
 	}
 }

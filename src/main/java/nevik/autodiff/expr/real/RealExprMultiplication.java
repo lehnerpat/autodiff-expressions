@@ -15,6 +15,8 @@
 
 package nevik.autodiff.expr.real;
 
+import nevik.autodiff.expr.real.visitor.VisitorRealExpression;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,7 +80,7 @@ public class RealExprMultiplication extends RealSuperExpression {
 	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
 	 */
 	public RealExprMultiplication(final List<RealExpression> subexpressions) {
-		super(immutableCopy(argCheck(subexpressions)));
+		super(RealExprMultiplication.class, immutableCopy(argCheck(subexpressions)));
 		this.hashCode = HASHCODE_PRIME_OFFSET + super.hashCode;
 	}
 
@@ -91,5 +93,10 @@ public class RealExprMultiplication extends RealSuperExpression {
 	@Override
 	public int hashCode() {
 		return this.hashCode;
+	}
+
+	@Override
+	public void accept(final VisitorRealExpression visitor) {
+		visitor.visit(this);
 	}
 }

@@ -64,6 +64,16 @@ public abstract class RealSuperExpression extends RealExpression {
 		return Collections.unmodifiableList(new ArrayList<>(subexpressions));
 	}
 
+	protected static Set<Class<? extends RealExpression>> collectUsedTypes(
+			final Class<? extends RealExpression> newClazz, final List<RealExpression> subexpressions) {
+		final HashSet<Class<? extends RealExpression>> identity = new HashSet<>();
+		identity.add(newClazz);
+		return Collections.unmodifiableSet(subexpressions.stream().map(e -> e.usedTypes).reduce(identity, (hs, s) -> {
+			hs.addAll(s);
+			return hs;
+		}));
+	}
+
 	private static int computeHashCode(final List<RealExpression> subexpressions) {
 		return HASHCODE_PRIME_OFFSET + subexpressions.hashCode();
 	}
@@ -84,7 +94,9 @@ public abstract class RealSuperExpression extends RealExpression {
 	 * @param subexpressions
 	 * 		list of sub-expressions contained in this super-expression
 	 */
-	protected RealSuperExpression(final List<RealExpression> subexpressions) {
+	protected RealSuperExpression(final Class<? extends RealExpression> newClazz,
+			final List<RealExpression> subexpressions) {
+		super(collectUsedTypes(newClazz, subexpressions));
 		this.subexpressions = subexpressions;
 		final HashSet<Variable> variables = new HashSet<>();
 		for (final RealExpression subexpression : subexpressions) {

@@ -13,23 +13,27 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-package nevik.autodiff.expr.real;
+package nevik.autodiff;
 
-import java.util.Collections;
+import nevik.autodiff.expr.real.RealConstant;
+import nevik.autodiff.expr.real.RealExprAddition;
+import nevik.autodiff.expr.real.RealExprMultiplication;
+import nevik.autodiff.expr.real.RealExprNegation;
+import nevik.autodiff.expr.real.visitor.VisitorRealExpressionPrintingInfix;
+
+import static nevik.autodiff.expr.real.RealConstant.reCons;
+import static nevik.autodiff.expr.real.RealExprAddition.reAdd;
+import static nevik.autodiff.expr.real.RealExprMultiplication.reMult;
 
 /**
  * @author Patrick Lehner
- * @since 2015-10-02
+ * @since 2015-10-03
  */
-public abstract class RealExpressionUnary extends RealSuperExpression {
-	/**
-	 * Create a new unary super-expression containing the given sub-expression. It is the caller's
-	 * responsibility to ensure that {@code subexpression} is not {@code null}.
-	 *
-	 * @param subexpression
-	 * 		sub-expression contained in this unary super-expression
-	 */
-	protected RealExpressionUnary(final Class<? extends RealExpression> newClazz, final RealExpression subexpression) {
-		super(newClazz, Collections.singletonList(subexpression));
-	}
-}
+public class TestMain {
+	public static void main(String[] args) {
+		final RealConstant c = reCons(1.0);
+		final RealExprAddition a = reAdd(c, RealExprNegation.reNeg(reCons(2.0)));
+		final RealExprMultiplication m = reMult(reCons(4.0), reCons(-4));
+
+		new VisitorRealExpressionPrintingInfix(null, a).evaluate();
+	}}
