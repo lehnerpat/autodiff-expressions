@@ -42,6 +42,7 @@ import static nevik.autodiff.expr.real.RealConstant.reCons;
 import static nevik.autodiff.expr.real.RealExprAddition.reAdd;
 import static nevik.autodiff.expr.real.RealExprMultiplication.reMult;
 import static nevik.autodiff.expr.real.RealExprNegation.reNeg;
+import static nevik.autodiff.expr.real.RealExprReciprocal.reRecip;
 
 /**
  * @author Patrick Lehner
@@ -216,7 +217,7 @@ public class VisitorRealExpressionSimplifier
 			// compute reciprocal of constant value
 			return reCons(1.0 / ((RealConstant) simplifiedSubexpr).value);
 		} else {
-			return simplifiedSubexpr;
+			return reRecip(simplifiedSubexpr);
 		}
 	}
 }

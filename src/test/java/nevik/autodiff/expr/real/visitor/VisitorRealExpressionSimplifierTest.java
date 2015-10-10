@@ -15,7 +15,6 @@
 
 package nevik.autodiff.expr.real.visitor;
 
-import nevik.autodiff.expr.real.RealExpression;
 import nevik.autodiff.expr.real.RealVariable;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +25,7 @@ import static nevik.autodiff.expr.real.RealConstant.reCons;
 import static nevik.autodiff.expr.real.RealExprAddition.reAdd;
 import static nevik.autodiff.expr.real.RealExprMultiplication.reMult;
 import static nevik.autodiff.expr.real.RealExprNegation.reNeg;
+import static nevik.autodiff.expr.real.RealExprReciprocal.reRecip;
 import static nevik.autodiff.expr.real.visitor.VisitorRealExpressionSimplifier.simplify;
 import static org.junit.Assert.assertEquals;
 
@@ -93,6 +93,14 @@ public class VisitorRealExpressionSimplifierTest {
 		assertEquals(ONE, simplify(reNeg(reNeg(ONE))));
 		assertEquals(reNeg(x), simplify(reNeg(reNeg(reNeg(x)))));
 		assertEquals(reCons(-1), simplify(reNeg(reNeg(reNeg(ONE)))));
+	}
+
+	@Test
+	public void testSimplifyUnpackDoubleReciprocal() throws Exception {
+		assertEquals(x, simplify(reRecip(reRecip(x))));
+		assertEquals(ONE, simplify(reRecip(reRecip(ONE))));
+		assertEquals(reRecip(x), simplify(reRecip(reRecip(reRecip(x)))));
+		assertEquals(reCons(0.5), simplify(reRecip(reRecip(reRecip(reCons(2))))));
 	}
 
 	@Test
