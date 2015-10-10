@@ -31,7 +31,7 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public class RealVariable extends RealExpression implements Variable {
+public class RealVariable extends RealExpression implements Variable<RealVariable> {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
@@ -51,7 +51,7 @@ public class RealVariable extends RealExpression implements Variable {
 	 * representations that contain this variable.
 	 */
 	public final String name;
-	protected final Set<Variable> variables;
+	protected final Set<RealVariable> variables;
 	protected final int hashCode;
 
 	/**
@@ -84,7 +84,7 @@ public class RealVariable extends RealExpression implements Variable {
 	 * @return an immutable singleton set containing this variable
 	 */
 	@Override
-	public Set<Variable> getVariables() {
+	public Set<RealVariable> getVariables() {
 		return this.variables;
 	}
 

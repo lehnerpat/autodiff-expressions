@@ -16,7 +16,6 @@
 package nevik.autodiff.expr.real;
 
 import nevik.autodiff.expr.Constant;
-import nevik.autodiff.expr.Variable;
 import nevik.autodiff.expr.real.visitor.VisitorRealExpression;
 
 import java.util.Collections;
@@ -35,7 +34,7 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public class RealConstant extends RealExpression implements Constant {
+public class RealConstant extends RealExpression implements Constant<RealVariable> {
 	// ===============================================================================================================
 	// ====  Static fields and methods  ==============================================================================
 	// ===============================================================================================================
@@ -50,7 +49,7 @@ public class RealConstant extends RealExpression implements Constant {
 	 * Correctly typed empty set returned by {@link #getVariables()}. Cached in a variable to prevent method calls to
 	 * {@link Collections#emptySet()} all the time.
 	 */
-	private static final Set<Variable> EMPTY_VARIABLE_SET = Collections.emptySet();
+	private static final Set<RealVariable> EMPTY_VARIABLE_SET = Collections.emptySet();
 	/**
 	 * Format string used to create the output of {@link #toString()}. Must handle exactly one {@code double} argument.
 	 */
@@ -110,7 +109,7 @@ public class RealConstant extends RealExpression implements Constant {
 	 * @return an immutable empty set
 	 */
 	@Override
-	public Set<Variable> getVariables() {
+	public Set<RealVariable> getVariables() {
 		return EMPTY_VARIABLE_SET;
 	}
 

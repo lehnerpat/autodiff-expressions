@@ -15,8 +15,6 @@
 
 package nevik.autodiff.expr.real;
 
-import nevik.autodiff.expr.Variable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -88,7 +86,7 @@ public abstract class RealSuperExpression extends RealExpression {
 	// ====  Instance fields and methods  ============================================================================
 	// ===============================================================================================================
 	public final List<RealExpression> subexpressions;
-	protected final Set<Variable> variables;
+	protected final Set<RealVariable> variables;
 	protected final int hashCode;
 
 	/**
@@ -104,7 +102,7 @@ public abstract class RealSuperExpression extends RealExpression {
 			final List<RealExpression> subexpressions) {
 		super(collectUsedTypes(newClazz, subexpressions));
 		this.subexpressions = subexpressions;
-		final HashSet<Variable> variables = new HashSet<>();
+		final HashSet<RealVariable> variables = new HashSet<>();
 		for (final RealExpression subexpression : subexpressions) {
 			variables.addAll(subexpression.getVariables());
 		}
@@ -113,7 +111,7 @@ public abstract class RealSuperExpression extends RealExpression {
 	}
 
 	@Override
-	public Set<Variable> getVariables() {
+	public Set<RealVariable> getVariables() {
 		return this.variables;
 	}
 

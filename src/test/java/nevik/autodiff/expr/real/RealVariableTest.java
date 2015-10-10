@@ -45,10 +45,10 @@ public class RealVariableTest {
 
 	@Test
 	public void testGetVariables() throws Exception {
-		final Set<Variable> v1aVariables = v1a.getVariables();
+		final Set<RealVariable> v1aVariables = v1a.getVariables();
 		assertTrue("Variable set must be singleton", v1aVariables.size() == 1);
 		assertTrue("Variable set must contain instance", v1aVariables.contains(v1a));
-		final Set<Variable> v2bVariables = v2b.getVariables();
+		final Set<RealVariable> v2bVariables = v2b.getVariables();
 		assertTrue("Variable set must be singleton", v2bVariables.size() == 1);
 		assertTrue("Variable set must contain instance", v2bVariables.contains(v2b));
 	}

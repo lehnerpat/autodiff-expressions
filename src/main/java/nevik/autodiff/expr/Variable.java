@@ -24,4 +24,4 @@ package nevik.autodiff.expr;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public interface Variable extends Expression {}
+public interface Variable<VarType extends Variable> extends Expression<VarType> {}

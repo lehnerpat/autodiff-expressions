@@ -27,12 +27,12 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public interface Expression extends Immutable {
+public interface Expression<VarType extends Variable> extends Immutable {
 	/**
 	 * Get a set of variables on which this expression depends. This set is always immutable (cf. {@link
 	 * java.util.Collections#unmodifiableSet(java.util.Set)} for what this means.
 	 *
 	 * @return a {@link java.util.Set} of all {@link Variable}s used in this expression
 	 */
-	Set<Variable> getVariables();
+	Set<VarType> getVariables();
 }

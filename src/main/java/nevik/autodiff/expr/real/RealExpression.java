@@ -28,7 +28,7 @@ import java.util.Set;
  * @author Patrick Lehner
  * @since 2015-10-02
  */
-public abstract class RealExpression implements Expression, CachedHashCode {
+public abstract class RealExpression implements Expression<RealVariable>, CachedHashCode {
 	// Implementation note: This class does not provide a common implementation of Expression.getVariables(), since the
 	// most reasonable way of doing so would be to pass the variable set to the constructor of this class
 	// (RealExpression) -- however, RealVariable *cannot* pass this set, since it would contain only the RealVariable
