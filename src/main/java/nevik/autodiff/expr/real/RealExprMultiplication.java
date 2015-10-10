@@ -33,7 +33,10 @@ public class RealExprMultiplication extends RealSuperExpression {
 	private static final int HASHCODE_PRIME_OFFSET = 10867;
 
 	/**
-	 * Create a new multiplication expression containing the given list of sub-expressions in the given order.
+	 * Create a new multiplication expression containing the given list of sub-expressions, in sorted order.
+	 * <p/>
+	 * The given list of sub-expressions is shallow-copied internally, so the list reference used can be freely
+	 * modified afterwards.
 	 *
 	 * @param subexpressions
 	 * 		list of sub-expressions contained in this multiplication expression; must be non-{@code null}, must not be
@@ -44,11 +47,14 @@ public class RealExprMultiplication extends RealSuperExpression {
 	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
 	 */
 	public static RealExprMultiplication reMult(final List<RealExpression> subexpressions) {
-		return new RealExprMultiplication(subexpressions);
+		return new RealExprMultiplication(subexpressions, /*sortSubexprs=*/true);
 	}
 
 	/**
 	 * Create a new multiplication expression containing the given sub-expressions in the given order.
+	 * <p/>
+	 * The given list of sub-expressions is shallow-copied internally, so the list reference used can be freely
+	 * modified afterwards.
 	 *
 	 * @param subexpressions
 	 * 		one or more sub-expressions contained in this multiplication expression; must be non-{@code null} (if passed
@@ -59,7 +65,44 @@ public class RealExprMultiplication extends RealSuperExpression {
 	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
 	 */
 	public static RealExprMultiplication reMult(final RealExpression... subexpressions) {
-		return new RealExprMultiplication(Arrays.asList(subexpressions));
+		return new RealExprMultiplication(Arrays.asList(subexpressions), /*sortSubexprs=*/true);
+	}
+
+	/**
+	 * Create a new multiplication expression containing the given list of sub-expressions in the given order (w/o
+	 * resorting).
+	 * <p/>
+	 * The given list of sub-expressions is shallow-copied internally, so the list reference used can be freely
+	 * modified afterwards.
+	 *
+	 * @param subexpressions
+	 * 		list of sub-expressions contained in this multiplication expression; must be non-{@code null}, must not be
+	 * 		empty, and must not contain any {@code null} elements
+	 * @throws NullPointerException
+	 * 		if {@code subexpressions} is {@code null}
+	 * @throws IllegalArgumentException
+	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
+	 */
+	public static RealExprMultiplication reMultUsrtd(final List<RealExpression> subexpressions) {
+		return new RealExprMultiplication(subexpressions, /*sortSubexprs=*/false);
+	}
+
+	/**
+	 * Create a new multiplication expression containing the given sub-expressions in the given order (w/o resorting).
+	 * <p/>
+	 * The given list of sub-expressions is shallow-copied internally, so the list reference used can be freely
+	 * modified afterwards.
+	 *
+	 * @param subexpressions
+	 * 		one or more sub-expressions contained in this multiplication expression; must be non-{@code null} (if passed
+	 * 		as array), must not be empty, and must not contain any {@code null} elements
+	 * @throws java.lang.NullPointerException
+	 * 		if {@code subexpressions} is {@code null}
+	 * @throws java.lang.IllegalArgumentException
+	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
+	 */
+	public static RealExprMultiplication reMultUsrtd(final RealExpression... subexpressions) {
+		return new RealExprMultiplication(Arrays.asList(subexpressions), /*sortSubexprs=*/false);
 	}
 
 	// ===============================================================================================================
@@ -69,7 +112,11 @@ public class RealExprMultiplication extends RealSuperExpression {
 	protected final int hashCode;
 
 	/**
-	 * Create a new multiplication expression containing the given list of sub-expressions in the given order.
+	 * Create a new multiplication expression containing the given list of sub-expressions, in sorted order. The
+	 * subexpressions are sorted according to {@link RealExpression#COMPARATOR}.
+	 * <p/>
+	 * The given list of sub-expressions is shallow-copied internally, so the list reference used can be freely
+	 * modified afterwards.
 	 *
 	 * @param subexpressions
 	 * 		list of sub-expressions contained in this multiplication expression; must be non-{@code null}, must not be
@@ -80,7 +127,29 @@ public class RealExprMultiplication extends RealSuperExpression {
 	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
 	 */
 	public RealExprMultiplication(final List<RealExpression> subexpressions) {
-		super(RealExprMultiplication.class, immutableCopy(argCheck(subexpressions)));
+		this(subexpressions, /*sortSubexprs=*/true);
+	}
+
+	/**
+	 * Create a new multiplication expression containing the given list of sub-expressions, in either given or sorted
+	 * order (depending on the value of {@code sortSubexprs}). If {@code sortSubexprs} is {@code true}, the
+	 * subexpressions are sorted according to {@link RealExpression#COMPARATOR}.
+	 * <p/>
+	 * The given list of sub-expressions is shallow-copied internally, so the list reference used can be freely
+	 * modified afterwards.
+	 *
+	 * @param subexpressions
+	 * 		list of sub-expressions contained in this multiplication expression; must be non-{@code null}, must not be
+	 * 		empty, and must not contain any {@code null} elements
+	 * @param sortSubexprs
+	 * 		whether to sort (the copy of) {@code subexpressions}
+	 * @throws NullPointerException
+	 * 		if {@code subexpressions} is {@code null}
+	 * @throws IllegalArgumentException
+	 * 		if {@code subexpressions} is empty or contains a {@code null} entry
+	 */
+	public RealExprMultiplication(final List<RealExpression> subexpressions, final boolean sortSubexprs) {
+		super(RealExprMultiplication.class, immutableCopy(argCheck(subexpressions), sortSubexprs));
 		this.hashCode = HASHCODE_PRIME_OFFSET + super.hashCode;
 	}
 

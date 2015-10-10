@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nevik.autodiff.expr.real.RealConstant.ZERO;
 import static nevik.autodiff.expr.real.RealConstant.reCons;
@@ -95,8 +96,10 @@ public class VisitorRealExpressionSimplifier
 	public RealExpression visit(final RealExprAddition realExprAddition, final Void state) {
 		final int subexprCount = realExprAddition.subexpressions.size();
 		final List<RealExpression> simplifiedSummands =
-				realExprAddition.subexpressions.stream().map(expr -> expr.accept(this, null))
-						.collect(Collectors.toList());
+				realExprAddition.subexpressions.stream().map(expr -> expr.accept(this, null)).flatMap(
+						expr -> (expr instanceof RealExprAddition) ?
+								((RealExprAddition) expr).subexpressions.stream() :
+								Stream.of(expr)).collect(Collectors.toList());
 
 		if (subexprCount == 1) {
 			// if there's only one summand, we can't simplify further at this level
@@ -107,12 +110,17 @@ public class VisitorRealExpressionSimplifier
 		final Map<RealExpression, Integer> subexprCounts = new HashMap<>();
 		double constantVal = 0;
 
-		for (final RealExpression subexpression : simplifiedSummands) {
+		for (RealExpression subexpression : simplifiedSummands) {
+			int sign = 1;
+			if (subexpression instanceof RealExprNegation) {
+				subexpression = ((RealExprNegation) subexpression).subexpressions.get(0);
+				sign = -1;
+			}
 			if (subexpression instanceof RealConstant) {
 				// collect up all constants
-				constantVal += ((RealConstant) subexpression).value;
+				constantVal += sign * ((RealConstant) subexpression).value;
 			} else {
-				subexprCounts.put(subexpression, subexprCounts.getOrDefault(subexpression, 0) + 1);
+				subexprCounts.put(subexpression, subexprCounts.getOrDefault(subexpression, 0) + sign);
 			}
 		}
 
@@ -120,7 +128,16 @@ public class VisitorRealExpressionSimplifier
 			newSummands.add(reCons(constantVal));
 		}
 		for (final Entry<RealExpression, Integer> entry : subexprCounts.entrySet()) {
-			newSummands.add(reMult(reCons(entry.getValue()), entry.getKey()));
+			final Integer factor = entry.getValue();
+			if (factor != 0) {
+				if (factor == 1) {
+					newSummands.add(entry.getKey());
+				} else if (factor == -1) {
+					newSummands.add(reNeg(entry.getKey()));
+				} else {
+					newSummands.add(reMult(reCons(factor), entry.getKey()));
+				}
+			}
 		}
 
 		if (newSummands.isEmpty()) {
@@ -128,7 +145,7 @@ public class VisitorRealExpressionSimplifier
 		} else if (newSummands.size() == 1) {
 			return newSummands.get(0);
 		} else {
-			return reAdd(newSummands);
+			return reAdd(newSummands); // reAdd sorts the summands
 		}
 	}
 
@@ -136,8 +153,10 @@ public class VisitorRealExpressionSimplifier
 	public RealExpression visit(final RealExprMultiplication realExprMultiplication, final Void state) {
 		final int subexprCount = realExprMultiplication.subexpressions.size();
 		final List<RealExpression> simplifiedFactors =
-				realExprMultiplication.subexpressions.stream().map(expr -> expr.accept(this, null))
-						.collect(Collectors.toList());
+				realExprMultiplication.subexpressions.stream().map(expr -> expr.accept(this, null)).flatMap(
+						expr -> (expr instanceof RealExprMultiplication) ?
+								((RealExprMultiplication) expr).subexpressions.stream() :
+								Stream.of(expr)).collect(Collectors.toList());
 
 		if (subexprCount == 1) {
 			// if there's only one summand, we can't simplify further at this level
@@ -156,7 +175,11 @@ public class VisitorRealExpressionSimplifier
 			}
 		}
 
-		if (constantVal != 0 || newFactors.isEmpty()) {
+		if (constantVal == 0) {
+			return ZERO;
+		}
+
+		if (constantVal != 1 || newFactors.isEmpty()) {
 			newFactors.add(reCons(constantVal));
 		}
 
@@ -165,7 +188,7 @@ public class VisitorRealExpressionSimplifier
 		} else if (newFactors.size() == 1) {
 			return newFactors.get(0);
 		} else {
-			return reMult(newFactors);
+			return reMult(newFactors); // reMult sorts the factors
 		}
 	}
 

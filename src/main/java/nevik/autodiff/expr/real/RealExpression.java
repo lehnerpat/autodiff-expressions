@@ -19,6 +19,7 @@ import nevik.autodiff.expr.Expression;
 import nevik.autodiff.expr.real.visitor.VisitorRealExpression;
 import nevik.autodiff.util.CachedHashCode;
 
+import java.util.Comparator;
 import java.util.Set;
 
 /**
@@ -33,6 +34,8 @@ public abstract class RealExpression implements Expression, CachedHashCode {
 	// (RealExpression) -- however, RealVariable *cannot* pass this set, since it would contain only the RealVariable
 	// instance itself, and a constructor cannot pass `this` to its super constructor. We therefore defer a common
 	// implementation of getVariables() for all non-terminal expressions to RealSuperExpression instead.
+
+	public static final Comparator<RealExpression> COMPARATOR = Comparator.comparing(RealExpression::hashCode);
 
 	public final Set<Class<? extends RealExpression>> usedTypes;
 

@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base class for non-terminal real-valued expressions, i.e. expressions that contain one or more
@@ -60,8 +61,13 @@ public abstract class RealSuperExpression extends RealExpression {
 		return subexpressions;
 	}
 
-	protected static List<RealExpression> immutableCopy(final List<RealExpression> subexpressions) {
-		return Collections.unmodifiableList(new ArrayList<>(subexpressions));
+	protected static List<RealExpression> immutableCopy(final List<RealExpression> subexpressions,
+			final boolean sortCopy) {
+		final ArrayList<RealExpression> subexpressionsCopy = new ArrayList<>(subexpressions);
+		if (sortCopy) {
+			subexpressionsCopy.sort(RealExpression.COMPARATOR);
+		}
+		return Collections.unmodifiableList(subexpressionsCopy);
 	}
 
 	protected static Set<Class<? extends RealExpression>> collectUsedTypes(
@@ -87,9 +93,9 @@ public abstract class RealSuperExpression extends RealExpression {
 
 	/**
 	 * Create a new super-expression containing the given list of sub-expressions in the given order. It is the
-	 * caller's
-	 * responsibility to ensure that a) {@code subexpressions} is not {@code null}, b) {@code subexpressions} is not
-	 * empty (i.e. contains at least one element), and c) {@code subexpressions} contains no {@code null} entries.
+	 * caller's responsibility to ensure that a) {@code subexpressions} is not {@code null}, b) {@code subexpressions}
+	 * is not empty (i.e. contains at least one element), c) {@code subexpressions} contains no {@code null} entries,
+	 * and d) {@code subexpressions} is properly sorted, if necessary (equality checks take order into account).
 	 *
 	 * @param subexpressions
 	 * 		list of sub-expressions contained in this super-expression
@@ -119,5 +125,11 @@ public abstract class RealSuperExpression extends RealExpression {
 	@Override
 	public int hashCode() {
 		return this.hashCode;
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + this.subexpressions.stream().map(RealExpression::toString)
+				.collect(Collectors.joining(",", "{", "}"));
 	}
 }

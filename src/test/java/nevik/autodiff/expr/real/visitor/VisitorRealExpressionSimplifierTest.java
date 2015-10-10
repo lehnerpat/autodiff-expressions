@@ -15,11 +15,13 @@
 
 package nevik.autodiff.expr.real.visitor;
 
+import nevik.autodiff.expr.real.RealExpression;
 import nevik.autodiff.expr.real.RealVariable;
 import org.junit.Before;
 import org.junit.Test;
 
 import static nevik.autodiff.expr.real.RealConstant.ONE;
+import static nevik.autodiff.expr.real.RealConstant.ZERO;
 import static nevik.autodiff.expr.real.RealConstant.reCons;
 import static nevik.autodiff.expr.real.RealExprAddition.reAdd;
 import static nevik.autodiff.expr.real.RealExprMultiplication.reMult;
@@ -105,8 +107,27 @@ public class VisitorRealExpressionSimplifierTest {
 	}
 
 	@Test
+	public void testSimplifyUnpackNestedAddition2Lvl() throws Exception {
+		assertEquals(reAdd(x, y, z), simplify(reAdd(x, reAdd(y, reAdd(z)))));
+		assertEquals(reAdd(x, y, z), simplify(reAdd(reAdd(reAdd(x), y), z)));
+	}
+
+	@Test
 	public void testSimplifyUnpackNestedMultiplication1Lvl() throws Exception {
 		assertEquals(reMult(x, y, z), simplify(reMult(x, reMult(y, z))));
 		assertEquals(reMult(x, y, z), simplify(reMult(reMult(x, y), z)));
+	}
+
+	@Test
+	public void testSimplifyUnpackNestedMultiplication2Lvl() throws Exception {
+		assertEquals(reMult(x, y, z), simplify(reMult(x, reMult(y, reMult(z)))));
+		assertEquals(reMult(x, y, z), simplify(reMult(reMult(reMult(x), y), z)));
+	}
+
+	@Test
+	public void testSimplifyZeroAnnihilatesMultiplication() throws Exception {
+		assertEquals(ZERO, simplify(reMult(x, ZERO)));
+		assertEquals(ZERO, simplify(reMult(reAdd(x, y), reMult(x, reMult(ZERO)))));
+		assertEquals(ZERO, simplify(reMult(x, y, reAdd(z, reNeg(z)))));
 	}
 }
