@@ -22,7 +22,9 @@ import nevik.autodiff.expr.real.RealExprNegation;
 import nevik.autodiff.expr.real.RealExprReciprocal;
 import nevik.autodiff.expr.real.RealExpression;
 import nevik.autodiff.expr.real.RealVariable;
+import nevik.autodiff.expr.real.visitor.VisitorRealExpressionPrintingInfix.PrintingInfixParams;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,7 +38,17 @@ import java.util.Set;
  * @since 2015-10-04
  */
 public class VisitorRealExpressionPrintingInfix
-		extends AbstractVisitorRealExpression<Map<RealVariable, String>, Void, Void, Void> {
+		extends AbstractVisitorRealExpression<PrintingInfixParams, Void, Void, Void> {
+	public static final class PrintingInfixParams {
+		private final Map<RealVariable, String> varNames;
+		private final PrintStream output;
+
+		public PrintingInfixParams(final Map<RealVariable, String> varNames, final PrintStream output) {
+			this.varNames = varNames;
+			this.output = output;
+		}
+	}
+
 	private static final Set<Class<? extends RealExpression>> SUPPORTED_TYPES = //
 			Collections.unmodifiableSet(new HashSet<>(Arrays.asList( //
 					RealConstant.class, //
@@ -46,14 +58,30 @@ public class VisitorRealExpressionPrintingInfix
 					RealExprReciprocal.class, //
 					RealExprNegation.class)));
 
-	public VisitorRealExpressionPrintingInfix(final RealExpression rootExpression,
-			final Map<RealVariable, String> params) {
+	public static void printExpression(final RealExpression rootExpression, final PrintingInfixParams params) {
+		new VisitorRealExpressionPrintingInfix(rootExpression, params).evaluate();
+	}
+
+	public static void printExpression(final RealExpression rootExpression, final Map<RealVariable, String> varNames,
+			final PrintStream output) {
+		printExpression(rootExpression, new PrintingInfixParams(varNames, output));
+	}
+
+	public static void printExpression(final RealExpression rootExpression, final Map<RealVariable, String> varNames) {
+		printExpression(rootExpression, varNames, System.out);
+	}
+
+	public static void printExpression(final RealExpression rootExpression) {
+		printExpression(rootExpression, null, System.out);
+	}
+
+	public VisitorRealExpressionPrintingInfix(final RealExpression rootExpression, final PrintingInfixParams params) {
 		super(SUPPORTED_TYPES, rootExpression, params);
 	}
 
 	@Override
 	protected Void doEvaluation() {
-		if (this.params == null && this.rootExpression.usedTypes.contains(RealVariable.class)) {
+		if (this.params.varNames == null && this.rootExpression.usedTypes.contains(RealVariable.class)) {
 			throw new IllegalArgumentException(
 					"Cannot print expression containing variables without a name map (param)");
 		}
@@ -63,54 +91,54 @@ public class VisitorRealExpressionPrintingInfix
 
 	@Override
 	public Void visit(final RealConstant realConstant, final Void state) {
-		System.out.print(realConstant.value);
+		this.params.output.print(realConstant.value);
 		return null;
 	}
 
 	@Override
 	public Void visit(final RealVariable realVariable, final Void state) {
-		System.out.print(Objects.requireNonNull(this.params.get(realVariable)));
+		this.params.output.print(Objects.requireNonNull(this.params.varNames.get(realVariable)));
 		return null;
 	}
 
 	@Override
 	public Void visit(final RealExprAddition realExprAddition, final Void state) {
 		final Iterator<RealExpression> iterator = realExprAddition.subexpressions.iterator();
-		System.out.print("(");
+		this.params.output.print("(");
 		iterator.next().accept(this, null);
 		while (iterator.hasNext()) {
-			System.out.print(" + ");
+			this.params.output.print(" + ");
 			iterator.next().accept(this, null);
 		}
-		System.out.print(")");
+		this.params.output.print(")");
 		return null;
 	}
 
 	@Override
 	public Void visit(final RealExprMultiplication realExprMultiplication, final Void state) {
 		final Iterator<RealExpression> iterator = realExprMultiplication.subexpressions.iterator();
-		System.out.print("(");
+		this.params.output.print("(");
 		iterator.next().accept(this, null);
 		while (iterator.hasNext()) {
-			System.out.print(" * ");
+			this.params.output.print(" * ");
 			iterator.next().accept(this, null);
 		}
-		System.out.print(")");
+		this.params.output.print(")");
 		return null;
 	}
 
 	@Override
 	public Void visit(final RealExprNegation realExprNegation, final Void state) {
-		System.out.print("-");
+		this.params.output.print("-");
 		realExprNegation.subexpressions.get(0).accept(this, null);
 		return null;
 	}
 
 	@Override
 	public Void visit(final RealExprReciprocal realExprReciprocal, final Void state) {
-		System.out.print("(1/");
+		this.params.output.print("(1/");
 		realExprReciprocal.subexpressions.get(0).accept(this, null);
-		System.out.print(")");
+		this.params.output.print(")");
 		return null;
 	}
 }
